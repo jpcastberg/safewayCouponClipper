@@ -62,27 +62,72 @@ d4u.clipCoupons = function(ph, page) {
 
     // jscs:disable
     // IIFE converted from "bookmarklet" at https://github.com/nishnet2002/Safeway-Just-for-u
-    (function(){(function(e,a,g,h,f,c,b,d){if(!(f=e.jQuery)||g>f.fn.jquery||h(f)){
-    c=a.createElement("script");c.type="text/javascript";c.src="http://ajax.googleapis.com/ajax/libs/jquery/"+
-    g+"/jquery.min.js";c.onload=c.onreadystatechange=function(){if(!b&&(!(d=this.readyState)||d=="loaded"||
-    d=="complete")){h((f=e.jQuery).noConflict(1),b=1);f(c).remove();}};a.documentElement.childNodes[0]
-    .appendChild(c);}})(window,document,"1.7.2",function($,L){function OfferProcessor(c,f){var d=c;var b=0;
-    var a=f;var e="/Clipping1/services/clip/offers";return{processOffers:function(l){var p=l.offers;var n=0;
-    for(var m=0;m<p.length;m++){var o=p[m];if(o.clipStatus==="U"){n++;var g=[];var k={};k.offerId=o.offerId;
-    k.offerPgm=o.offerPgm;g.push(k);var h={};h.clips=g;var j=JSON.stringify(h);$.ajax({type:"POST",url:e,
-    contentType:"application/json",data:j,beforeSend:function(i){i.setRequestHeader("SWY_API_KEY","emjou");
-    i.setRequestHeader("SWY_BANNER","safeway");i.setRequestHeader("SWY_VERSION","1.0");
-    i.setRequestHeader("X-SWY_API_KEY","emjou");i.setRequestHeader("X-SWY_BANNER","safeway");
-    i.setRequestHeader("X-SWY_VERSION","1.0");}});}}b=n;a();},process:function(){var g=this;
-    $.ajax(d).done(function(h){g.processOffers(h);});},getOffersAdded:function(){return b;}};}
-    function Counter(c){var d=c;var a="";var b=0;return{incrementCount:function(){b++;if(b==d){a();}},
-    setCallback:function(e){a=e;}};}$(document).ready(function(){var c=Counter(3);
-    var b=OfferProcessor("/J4UProgram1/services/program/CC/offer/allocations",c.incrementCount);
-    var e=OfferProcessor("/J4UProgram1/services/program/PD/offer/allocations",c.incrementCount);
-    var d=OfferProcessor("/J4UProgram1/services/program/YCS/offer/allocations",c.incrementCount);
-    var a=function(){var f=b.getOffersAdded();var g=e.getOffersAdded();if(f+g>0){
-    alert("J4U - Added "+f+" 'Coupon Center' coupons and \n "+g+" 'Personalized Deals' Coupons.");}};
-    c.setCallback(a);b.process();e.process();d.process();});});})();
+    (function() {
+      "use strict";
+      var promises = [];
+      var allcoupons = Object.values(JSON.parse(localStorage.getItem("abCoupons"))["offers"]);
+      var coupons = allcoupons.filter(function(x) {
+          return x.status === "U";
+      }).filter(function(y) {
+          return y.deleted !== 0;
+      });
+      if (coupons.length > 0) {
+          //window.alert("clipping " + coupons.length + " of " + allcoupons.length + " coupons");
+          coupons.forEach(function(item) {
+              var data = {
+                  "items": []
+              }
+                , clip = {}
+                , list = {};
+              clip.clipType = "C";
+              clip.itemId = item.offerId;
+              clip.itemType = item.offerPgm;
+              list.clipType = "L";
+              list.itemId = item.offerId;
+              list.itemType = item.offerPgm;
+              data.items.push(clip);
+              data.items.push(list);
+              var request = new Request(window.AB.couponClipPath + "?storeId\x3d" + window.AB.userInfo.j4u.storeId,{
+                  method: 'POST',
+                  mode: 'cors',
+                  redirect: 'error',
+                  headers: new Headers(window.AB.j4uHttpOptions),
+                  body: JSON.stringify(data)
+              });
+              var promise = fetch(request).then(function(response) {
+                  return response.json();
+              }).then(function(itemjson) {
+                  if (itemjson.items[0]["status"] === 1) {
+                      var wtf = JSON.parse(localStorage.getItem("abCoupons"));
+                      wtf.offers[item.offerId].status = "C";
+                      localStorage.setItem("abCoupons", JSON.stringify(wtf));
+                  }
+              });
+              promises.push(promise);
+          });
+          Promise.all(promises).then(function() {
+              if (Object.values(JSON.parse(localStorage.getItem("abCoupons"))["offers"]).filter(function(x) {
+                  return x.status === "U";
+              }).filter(function(y) {
+                  return y.deleted !== 0;
+              }).length > 0) {
+                  //window.alert("there are still some unclipped coupons - something probably broke this script");
+              } else {
+                  //window.alert("all coupons clipped - reloading page");
+              }
+              localStorage.removeItem("abCoupons");
+              localStorage.removeItem("abJ4uCoupons");
+              location.reload();
+          });
+      } else {
+          if (allcoupons.length > 0) {
+              //window.alert("no clippable coupons");
+          } else {
+              //window.alert("no coupons detected");
+          }
+      }
+    }
+    )();
     // jscs: enable
 
     // lol, angularjs
