@@ -4,9 +4,8 @@ var d4u  = {};
 
 d4u.urls = {
   main: 'http://www.safeway.com/',
-  login: 'https://www.safeway.com/ShopStores/OSSO-Login.page' +
-    '?goto=http://www.safeway.com/ShopStores/Justforu-Coupons.page',
-  coupons: 'http://www.safeway.com/ShopStores/Justforu-Coupons.page'
+  login: 'https://www.safeway.com/account/sign-in.html'
+  coupons: 'https://www.safeway.com/justforu/coupons-deals.html'
 };
 
 d4u.currentPage = d4u.urls.main;
