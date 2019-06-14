@@ -1,6 +1,0 @@
-{
-  "preset": "airbnb",
-  "preset": "google",
-  "preset": "grunt",
-  "maximumLineLength": 120
-}
