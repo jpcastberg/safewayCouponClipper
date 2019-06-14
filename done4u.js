@@ -174,13 +174,13 @@ d4u.attemptLogin = function(ph, page) {
   console.log('attempting login');
   page.evaluate(function(_login, _password) {
 
-    var formEmail    = document.querySelector('input#userId[type="text"]');
-    var formPassword = document.querySelector('input#password[type="password"]');
+    var formEmail    = document.querySelector('input#label-email[type="text"]');
+    var formPassword = document.querySelector('input#label-password[type="password"]');
 
     formEmail.value = _login;
     formPassword.value = _password;
 
-    LoginSubmit(); // site function
+    SWY.OKTA.signIn({ preventDefault: () => {} }) // site function
   }, function() {}, d4u.login, d4u.password);
 
 };
