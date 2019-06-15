@@ -31,7 +31,13 @@ d4u.init = function() {
           console.log('loaded\n  ' + d4u.currentPage);
           switch (d4u.currentPage) {
             case d4u.urls.main:
-              page.open(d4u.urls.login); break;
+              if (SWY.ENFORCEMENT.isTokenActive()) { // Site function, verifies user is logged in
+                //User is logged in, open "just for U"
+                page.open(d4u.urls.coupons);
+              } else {
+                // User is not logged in - redirect to login
+                page.open(d4u.urls.login); break;
+              }
             case d4u.urls.login:
               d4u.attemptLogin(ph, page); break;
             case d4u.urls.coupons:
