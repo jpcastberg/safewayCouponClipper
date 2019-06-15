@@ -158,8 +158,8 @@ d4u.clipCoupons = function(ph, page) {
 
     if (!d4u.clipped) {
       d4u.clipped = true;
-      console.log('refreshing coupon page in 180s');
-      setTimeout(function() { page.open(d4u.currentPage); }, 180000);
+      console.log('refreshing coupon page in 30s');
+      setTimeout(function() { page.open(d4u.currentPage); }, 30000);
     } else {
       console.log('proceeding with logout in 30s');
       setTimeout(function() { d4u.logout(ph, page); }, 30000);
@@ -173,7 +173,7 @@ d4u.logout = function(ph, page) {
   d4u.login = '';
   d4u.password = '';
   page.evaluate(function() {
-    openssoLogoff();
+    SWY.OKTA.signOutFromOkta() // Logout
   });
 };
 
