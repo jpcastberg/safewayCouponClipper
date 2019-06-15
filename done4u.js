@@ -4,7 +4,7 @@ var d4u  = {};
 
 d4u.urls = {
   main: 'http://www.safeway.com/',
-  login: 'https://www.safeway.com/account/sign-in.html'
+  login: 'https://www.safeway.com/account/sign-in.html',
   coupons: 'https://www.safeway.com/justforu/coupons-deals.html'
 };
 
@@ -137,25 +137,25 @@ d4u.clipCoupons = function(ph, page) {
     // jscs: enable
 
     // lol, angularjs
-    var _unfilteredItems = justForYouApp.coupons._invokeQueue[12][2][1].unfilteredItems.slice();
-    var _data = {};
+    // var _unfilteredItems = justForYouApp.coupons._invokeQueue[12][2][1].unfilteredItems.slice();
+    // var _data = {};
 
-    _data.count = _unfilteredItems.length || 0;
-    _data.clipped = 0;
-    _data.unclipped = 0;
+    // _data.count = _unfilteredItems.length || 0;
+    // _data.clipped = 0;
+    // _data.unclipped = 0;
 
-    _unfilteredItems.forEach(function(_item) {
-      if (_item.clipStatus === 'C') { _data.clipped++; }
+    // _unfilteredItems.forEach(function(_item) {
+    //   if (_item.clipStatus === 'C') { _data.clipped++; }
 
-      if (_item.clipStatus === 'U') { _data.unclipped++; }
-    });
+    //   if (_item.clipStatus === 'U') { _data.unclipped++; }
+    // });
 
-    return _data;
+    // return _data;
   },
 
   function(result) {
-    console.log('clipping attempt completed\n  results: ' + JSON.stringify(result));
-
+    //console.log('clipping attempt completed\n  results: ' + JSON.stringify(result));
+    console.log('clipping attempt complete')
     if (!d4u.clipped) {
       d4u.clipped = true;
       console.log('refreshing coupon page in 30s');
