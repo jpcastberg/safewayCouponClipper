@@ -13,54 +13,51 @@ d4u.currentPage = d4u.urls.main;
 d4u.login    = process.env.J4U_LOGIN;
 d4u.password = process.env.J4U_PASSWORD;
 
-d4u.init = function() {
-  phantom.create(function(ph) {
-    ph.createPage(function(page) {
-      // https://github.com/ariya/phantomjs/issues/10687
-      ph.onError = page.onError = function(err) {
-        page.close();
-        ph.exit();
-      };
+d4u.init = async function() {
+  const ph = await phantom.create();
+  const page = await instance.createPage();
 
-      page.set('onLoadFinished', function(status) {
-        if (status !== 'success') {
-          console.log('exiting, unable to load ' + d4u.currentPage);
+  ph.onError = page.onError = function(err) {
+    page.close();
+    ph.exit();
+  };
+  
+  page.set('onLoadFinished', function(status) {
+    if (status !== 'success') {
+      console.log('exiting, unable to load ' + d4u.currentPage);
+      page.close();
+      ph.exit();
+    } else {
+      console.log('loaded\n  ' + d4u.currentPage);
+      switch (d4u.currentPage) {
+        case d4u.urls.main:
+          if (SWY.ENFORCEMENT.isTokenActive()) { // Site function, verifies user is logged in
+            //User is logged in, open "just for U"
+            page.open(d4u.urls.coupons);
+          } else {
+            // User is not logged in - redirect to login
+            page.open(d4u.urls.login); break;
+          }
+        case d4u.urls.login:
+          d4u.attemptLogin(ph, page); break;
+        case d4u.urls.coupons:
+          d4u.clipCoupons(ph, page); break;
+        default:
+          console.log('unknown page, exiting / logging out');
           page.close();
           ph.exit();
-        } else {
-          console.log('loaded\n  ' + d4u.currentPage);
-          switch (d4u.currentPage) {
-            case d4u.urls.main:
-              if (SWY.ENFORCEMENT.isTokenActive()) { // Site function, verifies user is logged in
-                //User is logged in, open "just for U"
-                page.open(d4u.urls.coupons);
-              } else {
-                // User is not logged in - redirect to login
-                page.open(d4u.urls.login); break;
-              }
-            case d4u.urls.login:
-              d4u.attemptLogin(ph, page); break;
-            case d4u.urls.coupons:
-              d4u.clipCoupons(ph, page); break;
-            default:
-              console.log('unknown page, exiting / logging out');
-              page.close();
-              ph.exit();
-              break;
-          }
-        }
-      });
-
-      page.set('onUrlChanged', function(url) {
-        const baseURL = url.split('?')[0];
-        d4u.currentPage = baseURL;
-      });
-
-      page.open(d4u.currentPage);
-
-    });
+          break;
+      }
+    }
   });
-};
+  
+  page.set('onUrlChanged', function(url) {
+    const baseURL = url.split('?')[0];
+    d4u.currentPage = baseURL;
+  });
+  
+  page.open(d4u.currentPage);
+}
 
 d4u.clipCoupons = function(ph, page) {
   console.log('attempting to clip coupons');
