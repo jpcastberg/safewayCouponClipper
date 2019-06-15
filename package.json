@@ -8,7 +8,7 @@
   },
   "homepage": "https://github.com/kton/done4u",
   "dependencies": {
-    "phantom": "^6.2.0"
+    "puppeteer": "^1.17.0"
   },
   "scripts": {
     "start": "node done4u.js",
