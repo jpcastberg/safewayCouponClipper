@@ -52,7 +52,8 @@ d4u.init = function() {
       });
 
       page.set('onUrlChanged', function(url) {
-        d4u.currentPage = url;
+        const baseURL = url.split('?')[0];
+        d4u.currentPage = baseURL;
       });
 
       page.open(d4u.currentPage);
