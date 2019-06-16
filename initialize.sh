@@ -1,12 +1,15 @@
+SCRIPTPATH="$( cd "$(dirname "$0")" ; pwd -P )"
+
 echo "Welcome to safewayCouponClipper!"
 echo "Checking dependencies..."
+
 
 if [ -z $(which node) ]; then
     echo "Node not installed. Installing now..."
     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | bash && nvm install node 11.12.0
 fi
 
-if [ ! -d $(dirname $0)/node_modules ]; then
+if [ ! -d $SCRIPTPATH/node_modules ]; then
     echo "Node modules not installed. Installing now..."
     npm install
 fi
@@ -15,10 +18,10 @@ read -p "Please enter your Safeway email address: " varemail
 read -sp "Please enter your Safeway password: " varpassword
 
 # Create credentials file
-if [ -f $(dirname $0)/credentials.js ]; then
-    rm $(dirname $0)/credentials.js
+if [ -f $SCRIPTPATH/credentials.js ]; then
+    rm $SCRIPTPATH/credentials.js
 fi
-touch $(dirname $0)/credentials.js
+touch $SCRIPTPATH/credentials.js
 printf "module.exports = { username: "\'$varemail\'", password: "\'$varpassword\'" }" >> credentials.js
 
 # Exit if launchctl is not an available command.
@@ -45,7 +48,7 @@ printf "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
     <key>ProgramArguments</key>
     <array>
         <string>"$(which node)"</string>
-        <string>"$(dirname $0)"/safewayCouponClipper.js</string>
+        <string>"$SCRIPTPATH"/safewayCouponClipper.js</string>
     </array>
     <key>StartCalendarInterval</key>
     <dict>
