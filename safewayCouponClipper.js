@@ -77,7 +77,7 @@ const waitNMilliseconds = (wait) => {
     } else {
       console.log(`Landed on unexpected page: ${page.url()}\nShutting down...`);
       browser.close();
-      process.exit(1);
+      process.exit();
     }
   })
   page.goto('https://www.safeway.com/account/sign-in.html');
