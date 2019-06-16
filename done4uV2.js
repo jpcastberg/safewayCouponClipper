@@ -31,31 +31,27 @@ const urls = {
       // Attempt login
         // Login fails? => Exit browser
     const currentURL = page.url().split('?')[0];
-    switch (currentURL) {
-      case urls.login:
-        page.evaluate(() => {
-          const formEmail = document.querySelector('input#label-email[type="text"]');
-          const formPassword = document.querySelector('input#label-password[type="password"]');
-          formEmail.value = credentials.username;
-          formPassword.value = credentials.password;
-          SWY.OKTA.signIn({ preventDefault: () => {} }) // site function
-          console.log('LOGGING IN')
-        })
-        break;
-      case urls.main:
-        page.goto(urls.coupons);
-      case urls.coupons:
-        page.evaluate(() => {
-          console.log('made it to coupons')
-          console.log(localStorage)
-        })
-      default:
-        console.log('Page not found', page.url())
-        console.log('tried to match against', currentURL);
-        break;
+
+    if (currentURL === urls.login) {
+      console.log('On login page')
+      page.evaluate((un, pw) => {
+        const formEmail = document.querySelector('input#label-email[type="text"]');
+        const formPassword = document.querySelector('input#label-password[type="password"]');
+        formEmail.value = un;
+        formPassword.value = pw;
+        SWY.OKTA.signIn({ preventDefault: () => {} }) // site function
+      }, credentials.username, credentials.password)
+      console.log('Attempting to log in...')
+    } else if (currentURL === urls.main) {
+      console.log('On main page - redirecting to just for u coupons page')
+      page.goto(urls.coupons);
+    } else if (currentURL === urls.coupons) {
+      console.log('On coupons page');
+      browser.close();
+    } else {
+      console.log(`Landed on unexpected page: ${page.url()}\nSigning out and shutting down...`);
+      browser.close();
     }
   })
-  await page.goto('https://www.safeway.com/account/sign-in.html');
-
-  //await browser.close();
+  page.goto('https://www.safeway.com/account/sign-in.html');
 })();
