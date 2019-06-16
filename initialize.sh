@@ -34,6 +34,7 @@ fi
 # Create file for launch agent
 varlaunchagentfile="/Users/"$(whoami)"/Library/LaunchAgents/com."$(whoami)".safewayCouponClipper.plist"
 if [ -f $varlaunchagentfile ]; then
+    launchctl unload $varlaunchagentfile
     rm $varlaunchagentfile
 fi
 
@@ -62,7 +63,6 @@ printf "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
 
 # Load launch file
 launchctl load $varlaunchagentfile
-
 
 read -p "Installation complete! Clip coupons now? (y/n) " varclipnow
 
