@@ -14,7 +14,7 @@ const waitNMilliseconds = (wait) => {
 }
 
 (async () => {
-  const browser = await puppeteer.launch({ headless: false });
+  const browser = await puppeteer.launch();
   const page = await browser.newPage();
 
   // Event listener closes browser after failed login attempt
