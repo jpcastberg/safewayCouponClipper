@@ -8,8 +8,13 @@ const urls = {
   coupons: 'https://www.safeway.com/justforu/coupons-deals.html'
 };
 
+// Helper function for necessary wait times
+const waitNMilliseconds = (wait) => {
+  return new Promise((res) => setTimeout(() => res(), wait))
+}
+
 (async () => {
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch({ headless: false });
   const page = await browser.newPage();
 
   // Event listener closes browser after failed login attempt
@@ -27,13 +32,12 @@ const urls = {
   })
 
   page.on('load', async () => {
-    // First load: Sign in page
-      // Attempt login
-        // Login fails? => Exit browser
+    // Get current URL without parameters
     const currentURL = page.url().split('?')[0];
 
     if (currentURL === urls.login) {
-      console.log('On login page')
+      console.log('On Login page')
+      // Attempt sign-in
       page.evaluate((un, pw) => {
         const formEmail = document.querySelector('input#label-email[type="text"]');
         const formPassword = document.querySelector('input#label-password[type="password"]');
@@ -43,10 +47,26 @@ const urls = {
       }, credentials.username, credentials.password)
       console.log('Attempting to log in...')
     } else if (currentURL === urls.main) {
-      console.log('On main page - redirecting to just for u coupons page')
+      console.log('On Main page - redirecting to just for u coupons page')
       page.goto(urls.coupons);
     } else if (currentURL === urls.coupons) {
-      console.log('On coupons page');
+      console.log('On Coupons page');
+      // Wait for "Load More" button to appear
+      await waitNMilliseconds(3000);
+      // Load all coupons
+      let loadMoreButton = await page.$('.load-more');
+      while (loadMoreButton) {
+        await page.click('.load-more');
+        loadMoreButton = await page.$('.load-more');
+      }
+      const allElements = await page.$$('.grid-coupon-btn:not([disabled])');
+      while (allElements.length > 0) {
+        // Coupon clicks require wait time for some reason, otherwise redirects to Safeway home
+        await waitNMilliseconds(50);
+        await allElements[0].click();
+        allElements.shift();
+      }
+      console.log('All coupons clipped! Exiting now...')
       browser.close();
     } else {
       console.log(`Landed on unexpected page: ${page.url()}\nSigning out and shutting down...`);
