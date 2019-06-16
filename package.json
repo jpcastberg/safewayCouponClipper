@@ -1,7 +1,7 @@
 {
-  "name": "done4u",
+  "name": "safewayCouponClipper",
   "description": "clips your safeway j4u coupons",
-  "main": "done4u.js",
+  "main": "safewayCouponClipper.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/kton/done4u.git"
@@ -11,7 +11,6 @@
     "puppeteer": "^1.17.0"
   },
   "scripts": {
-    "start": "node done4u.js",
-    "test": "jshint . && jscs ."
+    "start": "node safewayCouponClipper.js"
   }
 }
