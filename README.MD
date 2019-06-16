@@ -6,20 +6,17 @@ Safeway Coupon Clipper logs on to your Safeway account and clips all of your cou
 ## How to use
 This program requires Nodejs and npm to use.
 
-- Clone Down this repo
-<br/>
-```git clone https://github.com/jpcastberg/safewayCouponClipper.git && cd safewayCouponClipper```
+- Clone Down this repo<br/>
+`git clone https://github.com/jpcastberg/safewayCouponClipper.git && cd safewayCouponClipper`
 
-- Run
-<br/>
-```npm run init```
+- Run<br/>
+`npm run init`
 
 - Follow the prompts
 
 ## Uninstalling
 
-- Run
-<br/>
-```npm run uninstall```
+- Run<br/>
+`npm run uninstall`
 
 - Coupons will no longer be clipped at regular intervals
