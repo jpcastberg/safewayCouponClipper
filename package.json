@@ -11,6 +11,8 @@
     "puppeteer": "^1.17.0"
   },
   "scripts": {
-    "start": "node safewayCouponClipper.js"
+    "init": "bash initialize.sh",
+    "start": "node safewayCouponClipper.js",
+    "uninstall": "bash uninstall.sh"
   }
 }
