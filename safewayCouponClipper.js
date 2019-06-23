@@ -51,10 +51,12 @@ const waitNMilliseconds = (wait) => {
       page.goto(urls.coupons);
     } else if (currentURL === urls.coupons) {
       console.log('On Coupons page');
-      // Wait for "Load More" button to appear
-      await waitNMilliseconds(3000);
       // Load all coupons
-      let loadMoreButton = await page.$('.load-more');
+      let loadMoreButton;
+      while (!loadMoreButton) {
+        await waitNMilliseconds(500); // Wait some time for the 'Load More' button to load
+        loadMoreButton = await page.$('.load-more');
+      }
       while (loadMoreButton) {
         await page.click('.load-more');
         loadMoreButton = await page.$('.load-more');
