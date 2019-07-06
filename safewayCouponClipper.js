@@ -1,7 +1,9 @@
 const puppeteer = require('puppeteer');
+const fs = require('fs');
 
 const credentials = require('./credentials.js');
 
+const logging = true; // Turn logging to log.txt on each clipping session on or off
 const urls = {
   main: 'https://www.safeway.com/home.html',
   login: 'https://www.safeway.com/account/sign-in.html',
@@ -13,8 +15,18 @@ const waitNMilliseconds = (wait) => {
   return new Promise((res) => setTimeout(() => res(), wait))
 }
 
+const logClippedCouponCount = (couponCount) => {
+  const dataToWrite = `Clipped ${couponCount} coupons on ${new Date().toLocaleString()}\n`;
+  return new Promise((res, rej) => {
+    fs.appendFile('log.txt', dataToWrite, (err) => {
+      if (err) rej(err);
+      res();
+    })
+  });
+}
+
 (async () => {
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch({ headless: true }); // Change 'headless' to false to watch coupons get clipped
   const page = await browser.newPage();
 
   // Event listener closes browser after failed login attempt
@@ -62,17 +74,14 @@ const waitNMilliseconds = (wait) => {
         loadMoreButton = await page.$('.load-more');
       }
       const allUnclippedCouponButtons = await page.$$('.grid-coupon-btn:not([disabled])');
-      if (allUnclippedCouponButtons.length === 0) {
-        console.log('No coupons to clip! Exiting now...')
-        browser.close();
-        return process.exit();
-      }
+      const couponCount = allUnclippedCouponButtons.length;
       while (allUnclippedCouponButtons.length > 0) {
         // Coupon clicks require wait time for some reason, otherwise redirects to Safeway home
         await waitNMilliseconds(50);
         await allUnclippedCouponButtons[0].click();
         allUnclippedCouponButtons.shift();
       }
+      if (logging) await logClippedCouponCount(couponCount);
       console.log('All coupons clipped! Exiting now...')
       browser.close();
       process.exit()
