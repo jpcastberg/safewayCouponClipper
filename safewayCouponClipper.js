@@ -1,9 +1,11 @@
 const puppeteer = require('puppeteer');
 const fs = require('fs');
+const path = require('path');
 
 const credentials = require('./credentials.js');
 
-const logging = true; // Turn logging to log.txt on each clipping session on or off
+const logging = false; // Turn logging to log.txt for each clipping session on or off
+
 const urls = {
   main: 'https://www.safeway.com/home.html',
   login: 'https://www.safeway.com/account/sign-in.html',
@@ -18,7 +20,7 @@ const waitNMilliseconds = (wait) => {
 const logClippedCouponCount = (couponCount) => {
   const dataToWrite = `Clipped ${couponCount} coupons on ${new Date().toLocaleString()}\n`;
   return new Promise((res, rej) => {
-    fs.appendFile('log.txt', dataToWrite, (err) => {
+    fs.appendFile(path.join(__dirname, 'log.txt'), dataToWrite, (err) => {
       if (err) rej(err);
       res();
     })
@@ -83,11 +85,11 @@ const logClippedCouponCount = (couponCount) => {
       }
       if (logging) await logClippedCouponCount(couponCount);
       console.log('All coupons clipped! Exiting now...')
-      browser.close();
-      process.exit()
+      await browser.close();
+      process.exit();
     } else {
       console.log(`Landed on unexpected page: ${page.url()}\nShutting down...`);
-      browser.close();
+      await browser.close();
       process.exit();
     }
   })
