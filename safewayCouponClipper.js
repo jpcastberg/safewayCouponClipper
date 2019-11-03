@@ -4,7 +4,7 @@ const path = require('path');
 
 const credentials = require('./credentials.js');
 
-const logging = false; // Turn logging to log.txt for each clipping session on or off
+const logging = true; // Turn logging to log.txt for each clipping session on or off
 
 const urls = {
   main: 'https://www.safeway.com/home.html',
@@ -73,6 +73,7 @@ const logClippedCouponCount = (couponCount) => {
       }
       while (loadMoreButton) {
         await page.click('.load-more');
+        await waitNMilliseconds(250);
         loadMoreButton = await page.$('.load-more');
       }
       const allUnclippedCouponButtons = await page.$$('.grid-coupon-btn:not([disabled])');
