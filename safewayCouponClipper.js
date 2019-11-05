@@ -80,7 +80,7 @@ const logClippedCouponCount = (couponCount) => {
       const couponCount = allUnclippedCouponButtons.length;
       while (allUnclippedCouponButtons.length > 0) {
         // Coupon clicks require wait time for some reason, otherwise redirects to Safeway home
-        await waitNMilliseconds(50);
+        await waitNMilliseconds(150);
         await allUnclippedCouponButtons[0].click();
         allUnclippedCouponButtons.shift();
       }
