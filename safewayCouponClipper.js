@@ -7,7 +7,7 @@ const credentials = require('./credentials.js');
 const logging = true; // Turn logging to log.txt for each clipping session on or off
 
 const urls = {
-  main: 'https://www.safeway.com/home.html',
+  main: 'https://www.safeway.com/',
   login: 'https://www.safeway.com/account/sign-in.html',
   coupons: 'https://www.safeway.com/justforu/coupons-deals.html'
 };
