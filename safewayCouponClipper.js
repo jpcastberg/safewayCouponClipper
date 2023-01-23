@@ -9,7 +9,7 @@ const logging = true; // Turn logging to log.txt for each clipping session on or
 const urls = {
   main: 'https://www.safeway.com/',
   login: 'https://www.safeway.com/account/sign-in.html',
-  coupons: 'https://www.safeway.com/justforu/coupons-deals.html'
+  coupons: 'https://www.safeway.com/foru/coupons-deals.html'
 };
 
 // Helper function for necessary wait times
